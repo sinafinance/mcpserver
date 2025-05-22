@@ -4,20 +4,22 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
 
 func main() {
-	// Create a new MCP server
+	log.SetOutput(os.Stderr) // 避免污染 stdout
+
 	s := server.NewMCPServer(
-		"Demo 🚀",
+		"demo",
 		"1.0.0",
-		server.WithToolCapabilities(false),
+		server.WithToolCapabilities(true),
 	)
 
-	// Add tool
 	tool := mcp.NewTool("hello_world",
 		mcp.WithDescription("Say hello to someone"),
 		mcp.WithString("name",
@@ -26,12 +28,12 @@ func main() {
 		),
 	)
 
-	// Add tool handler
 	s.AddTool(tool, helloHandler)
 
-	// Start the stdio server
+	log.Println("MCP server started, waiting for JSON-RPC requests...")
+
 	if err := server.ServeStdio(s); err != nil {
-		fmt.Printf("Server error: %v\n", err)
+		log.Printf("Server error: %v", err)
 	}
 }
 
@@ -40,6 +42,5 @@ func helloHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallTo
 	if !ok {
 		return nil, errors.New("name must be a string")
 	}
-
 	return mcp.NewToolResultText(fmt.Sprintf("Hello, %s!", name)), nil
 }
