@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/mark3labs/mcp-go/server"
 	"io/ioutil"
 	"net/http"
+	"os"
+
+	"github.com/mark3labs/mcp-go/server"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
@@ -25,7 +27,8 @@ func exchangeRateHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp
 		return nil, errors.New("to_currency must be a string")
 	}
 
-	url := fmt.Sprintf("https://forex.finance.sina.cn/api/getExchangeRate?symbol=%s", currencyPair)
+	urlPrefix := os.Getenv("SINA_FOREX_API_URL")
+	url := fmt.Sprintf("%s?symbol=%s", urlPrefix, currencyPair)
 
 	resp, err := http.Get(url)
 	if err != nil {
