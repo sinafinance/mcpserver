@@ -66,3 +66,13 @@ v1
 1. 汇率数据为实时数据，可能会有轻微延迟
 2. 建议合理控制API调用频率
 3. 部分货币对可能不支持直接查询 
+
+## SSE方式使用配置
+{
+  "mcpServers": {
+    "sinafinance-sse-mcpserver": {
+      "url": "https://mcp.finance.sina.com.cn/sse",
+      "name": "sinafinance-sse-mcpserver"
+    }
+  }
+}
